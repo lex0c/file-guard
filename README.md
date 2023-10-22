@@ -10,25 +10,33 @@ This script monitors specified events in a given file and provides log about the
 ## Usage
 
 Make `fguard.sh` executable:
-```bash
+```sh
 chmod +x fguard.sh
 ```
 
 Run:
-```bash
+```sh
 ./fguard.sh [file_to_monitor] [event1,event2,...]
 ```
 
 - `[file_to_monitor]`: The file path you want to monitor.
 - `[event1,event2,...]`: The events you want to watch, separated by commas without spaces.
 
-### Example
+### Example Output:
 
-```bash
-./fguard.sh /path/to/your/file ACCESS,OPEN,CLOSE_WRITE
+```sh
+File ./foobar was opened at dom 22 out 2023 19:06:51 -03
+Hostname: testpc
+Processes interacting with the file:
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF     NODE NAME
+tail    1775  foo    3r   REG    8,1        0 12869135 ./foobar
+Process Info for PID 1775:
+UID          PID    PPID  C STIME TTY          TIME CMD
+foo         1775    1679  0 19:06 pts/3    00:00:00 tail -f foobar
+Connections established on the server:
+Netid Recv-Q Send-Q         Local Address:Port Peer Address:PortProcess
+udp   0      0      192.168.0.102%enp60s0:68    192.168.0.1:67  
 ```
-
-This example will monitor the specified file for access, modification, and open events and log the details along with network state information.
 
 ## Events
 
