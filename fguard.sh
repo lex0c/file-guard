@@ -19,6 +19,8 @@ fi
 FILE_TO_MONITOR="$1"
 EVENTS="$2"
 #RECIPIENT=""
+#TELEGRAM_BOT_TOKEN="" # https://core.telegram.org/bots/features#botfather
+#TELEGRAM_CHAT_ID=""   # https://api.telegram.org/bot<YourBOTToken>/getUpdates
 
 if [ ! -f "$FILE_TO_MONITOR" ]; then
     echo "File does not exist."
@@ -74,6 +76,10 @@ notify() {
     echo -e "$MESSAGE\n$NET_STATE"
     #echo -e "$MESSAGE\n$NET_STATE" | sendmail $RECIPIENT
     #echo -e "$MESSAGE\n$NET_STATE" | jq -R -s -c '{data: .}' | curl -X POST -H "Content-Type: application/json" -d @- http://localhost:5000/log
+
+    #/bin/curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+    #    -d chat_id="$TELEGRAM_CHAT_ID" \
+    #    -d text="$MESSAGE\n$NET_STATE" &> /dev/null
 }
 
 # Loop that starts the monitoring
