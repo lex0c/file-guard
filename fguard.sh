@@ -88,5 +88,10 @@ while true; do
             exit 1
             ;;
     esac
+
+    if [ ! -f "$FILE_TO_MONITOR" ]; then
+        echo "File does not exist."
+        exit 1
+    fi
 done
 
