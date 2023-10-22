@@ -18,6 +18,7 @@ if [ "$#" -lt 2 ]; then
 fi
 
 # Path to the file you want to monitor
+HOSTNAME=$(uname -n)
 FILE_TO_MONITOR="$1"
 EVENTS="$2"
 #RECIPIENT=""
@@ -46,7 +47,9 @@ get_process_info() {
     fi
 }
 
-get_network_state() {
+get_state() {
+    echo -e "Hostname: $HOSTNAME"
+
     LSOF_OUTPUT=""
     if [ -f "$FILE_TO_MONITOR" ]; then
         # Getting processes accessing the file
@@ -76,7 +79,7 @@ get_network_state() {
 # Function to perform a notification (customize as needed)
 notify() {
     MESSAGE=$1
-    NET_STATE=$(get_network_state)
+    NET_STATE=$(get_state)
 
     # Here you might want to add code to send an email or another type of notification
     /bin/echo -e "$MESSAGE\n$NET_STATE"
