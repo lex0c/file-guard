@@ -3,11 +3,13 @@
 if ! command -v /bin/inotifywait &> /dev/null
 then
     /bin/echo "/bin/inotifywait could not be found."
+    exit 1
 fi
 
 if ! command -v /bin/lsof &> /dev/null
 then
     /bin/echo "/bin/lsof could not be found."
+    exit 1
 fi
 
 if [ "$#" -lt 2 ]; then
@@ -20,7 +22,7 @@ FILE_TO_MONITOR="$1"
 EVENTS="$2"
 #RECIPIENT=""
 #TELEGRAM_BOT_TOKEN="" # https://core.telegram.org/bots/features#botfather
-#TELEGRAM_CHAT_ID=""   # https://api.telegram.org/bot<YourBOTToken>/getUpdates
+#TELEGRAM_CHAT_ID="" # https://api.telegram.org/bot<YourBOTToken>/getUpdates
 
 if [ ! -f "$FILE_TO_MONITOR" ]; then
     /bin/echo "File does not exist."
@@ -45,8 +47,12 @@ get_process_info() {
 }
 
 get_network_state() {
-    # Getting processes accessing the file
-    LSOF_OUTPUT=$(/bin/lsof $FILE_TO_MONITOR)
+    LSOF_OUTPUT=""
+    if [ -f "$FILE_TO_MONITOR" ]; then
+        # Getting processes accessing the file
+        LSOF_OUTPUT=$(/bin/lsof $FILE_TO_MONITOR)
+    fi
+
     # Running ss command to get established connections and their processes
     SS_OUTPUT=$(/bin/ss -ntulp state established)
 
@@ -102,17 +108,17 @@ while true; do
             ;;
         "MOVE_SELF")
             notify "File $FILE_TO_MONITOR was moved at $TIMESTAMP"
-            exit 1
+            continue
             ;;
         "DELETE_SELF")
             notify "File $FILE_TO_MONITOR was deleted at $TIMESTAMP"
-            exit 1
+            continue
             ;;
     esac
 
     if [ ! -f "$FILE_TO_MONITOR" ]; then
-        /bin/echo "File does not exist."
-        exit 1
+        notify "File $FILE_TO_MONITOR does not exist."
+        continue
     fi
 done
 
