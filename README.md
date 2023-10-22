@@ -5,7 +5,7 @@ This script monitors specified events in a given file and provides log about the
 ## Prerequisites
 
 - Ensure that `inotify-tools` is installed as it includes `/bin/inotifywait`.
-- The script should be run on a system where the `/bin/ss` and `/bin/ps` command is available.
+- The script should be run on a system where the `/bin/lsof`, `/bin/ss` and `/bin/ps` command is available.
 
 ## Usage
 

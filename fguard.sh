@@ -1,8 +1,13 @@
 #!/bin/sh
 
-if ! command -v inotifywait &> /dev/null
+if ! command -v /bin/inotifywait &> /dev/null
 then
     echo "inotifywait could not be found."
+fi
+
+if ! command -v /bin/lsof &> /dev/null
+then
+    echo "lsof could not be found."
 fi
 
 if [ "$#" -lt 2 ]; then
@@ -33,21 +38,31 @@ get_process_info() {
         PROCESS_INFO=$(/bin/ps -p $PID -f)
         echo -e "Process Info for PID $PID:\n$PROCESS_INFO"
     else
-        echo "No PID found for process."
+        echo "No PID $PID found for process."
     fi
 }
 
 get_network_state() {
+    # Getting processes accessing the file
+    LSOF_OUTPUT=$(/bin/lsof $FILE_TO_MONITOR)
     # Running ss command to get established connections and their processes
     SS_OUTPUT=$(/bin/ss -ntulp state established)
 
-    # Logging the ss command output
-    echo -e "Output of 'ss -ntulp state established':\n$SS_OUTPUT"
+    if [ -n "$LSOF_OUTPUT" ]; then
+        # Logging the command output
+        echo -e "Processes interacting with the file:\n$LSOF_OUTPUT"
+        get_process_info $(echo "$LSOF_OUTPUT" | awk '{print $2}' | grep -v PID)
+    fi
 
-    # Extracting PIDs from the ss command output and getting process info
-    echo "$SS_OUTPUT" | grep -o 'pid=[0-9]*' | cut -d= -f2 | while read -r PID; do
-        get_process_info $PID
-    done
+    if [ -n "$SS_OUTPUT" ]; then
+        # Logging the command output
+        echo -e "Connections established on the server:\n$SS_OUTPUT"
+
+        # Extracting PIDs from the ss command output and getting process info
+        echo "$SS_OUTPUT" | grep -o 'pid=[0-9]*' | cut -d= -f2 | while read -r PID; do
+            get_process_info $PID
+        done
+    fi
 }
 
 # Function to perform a notification (customize as needed)
