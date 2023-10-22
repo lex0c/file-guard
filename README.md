@@ -50,6 +50,7 @@ This example will monitor the specified file for access, modification, and open 
 ```sh
 sudo chown root:root fguard.sh
 sudo chmod 700 fguard.sh
+sudo mv fguard.sh /root/
 ```
 
 **Configure the script to run at system startup:**
@@ -63,7 +64,7 @@ Create service:
 Description=File monitor
 
 [Service]
-ExecStart=/path/to/your/fguard.sh /path/to/your/file ACCESS,MODIFY,OPEN,CLOSE_WRITE,MOVE_SELF,DELETE_SELF
+ExecStart=/root/fguard.sh /path/to/your/file ACCESS,MODIFY,OPEN,CLOSE_WRITE,MOVE_SELF,DELETE_SELF
 Restart=on-failure
 RestartSec=5s
 
@@ -102,6 +103,6 @@ sudo crontab -e
 
 Add this line to run script at every reboot:
 ```sh
-@reboot /path/to/your/fguard.sh /path/to/your/file ACCESS,MODIFY,OPEN,CLOSE_WRITE,MOVE_SELF,DELETE_SELF
+@reboot /root/fguard.sh /path/to/your/file ACCESS,MODIFY,OPEN,CLOSE_WRITE,MOVE_SELF,DELETE_SELF
 ```
 
