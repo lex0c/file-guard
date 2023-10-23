@@ -61,9 +61,9 @@ sudo chmod 700 fguard.sh
 sudo mv fguard.sh /root/
 ```
 
-**Configure the script to run at system startup:**
+### Configure the script to run at system startup
 
-### Using `systemd`:
+#### Using `systemd`:
 
 Create service:
 `sudo vim /etc/systemd/system/fguard.service`
@@ -102,7 +102,7 @@ sudo systemctl reset-failed # systemd maintains a crash counter, so reset it
 
 **Disclaimer**: The fguard only monitors one file per execution, so to monitor others it is necessary to create a service for each file to be monitored.
 
-### Using `crontab`
+#### Using `crontab`
 
 Open the root crontab:
 ```sh
