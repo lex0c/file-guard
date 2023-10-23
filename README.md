@@ -114,3 +114,30 @@ Add this line to run script at every reboot:
 @reboot /root/fguard.sh /path/to/your/file ACCESS,MODIFY,OPEN,CLOSE_WRITE,MOVE_SELF,DELETE_SELF
 ```
 
+## Hide root user processes from other users
+
+`hidepid` is an option that can be set on the proc filesystem (`/proc`) in Linux to restrict users from seeing each other’s processes.
+
+### Implementing hidepid:
+
+1. **Edit `/etc/fstab` file to include the hidepid option:**
+    ```bash
+    sudo vim /etc/fstab
+    ```
+
+2. **Add or modify the following line:**
+    ```plaintext
+    proc /proc proc defaults,hidepid=2 0 0
+    ```
+    - `hidepid=2`: Users can only see their own processes.
+   
+3. **Remount the proc filesystem:**
+    ```bash
+    sudo mount -o remount /proc
+    ```
+   
+4. **Verify the Changes:**
+    ```bash
+    ps aux
+    ```
+   You should only be able to see the processes of the logged-in user.
