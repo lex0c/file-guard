@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -uo pipefail
+#set -x # debug
+
 if ! command -v /bin/inotifywait &> /dev/null
 then
     /bin/echo "/bin/inotifywait could not be found."
@@ -85,6 +88,8 @@ notify() {
     /bin/echo -e "$MESSAGE\n$NET_STATE"
     #/bin/echo -e "$MESSAGE\n$NET_STATE" | sendmail $RECIPIENT
     #/bin/echo -e "$MESSAGE\n$NET_STATE" | /bin/jq -R -s -c '{data: .}' | /bin/curl -X POST -H "Content-Type: application/json" -d @- http://localhost:5000/log
+
+    #/bin/notify-send -t 10000 "File Change Detected" "$MESSAGE\n$NET_STATE"
 
     #/bin/curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
     #    -d chat_id="$TELEGRAM_CHAT_ID" \
